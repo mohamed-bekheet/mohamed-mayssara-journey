@@ -253,10 +253,14 @@ footer {
     text-align: center;
     margin-top: 5rem;
     color: var(--text-light);
-    font-size: 1rem;
-    opacity: 0.9;
-    font-weight: 300;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-style: italic;
+    opacity: 1;
+    font-weight: 600;
     letter-spacing: 1px;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+    padding-bottom: 1.5rem;
 }
 
 /* Responsive Styles for Desktop (to center the timeline) */
