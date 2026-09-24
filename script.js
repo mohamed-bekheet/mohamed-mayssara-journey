@@ -150,6 +150,9 @@ function initEasterEgg() {
 
     // Tap on the overlay container to advance / close
     overlay.querySelector('.easter-egg-container').addEventListener('click', (e) => {
+        // Only advance if the user taps precisely on the hint text
+        if (!e.target.closest('.ee-hint')) return;
+        
         e.stopPropagation();
         currentSlide++;
         if (currentSlide >= totalSlides) {
