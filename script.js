@@ -178,43 +178,32 @@ function initThemeToggle() {
     // URL overrides saved preference
     const initialTheme = urlTheme || localStorage.getItem('theme') || 'dark';
     
-    let audioUnlocked = false;
-
-    function updateMusic(isLight, forcePlay = true) {
-        const audio = document.getElementById('bg-music');
-        if (audio) {
-            const newSrc = isLight ? 'lightmusic.mp3' : 'darkmusic.mp3';
-            if (!audio.getAttribute('src') || !audio.getAttribute('src').includes(newSrc)) {
-                audio.src = newSrc;
-            }
-            if (forcePlay && audioUnlocked && audio.paused) {
-                audio.play().catch(e => console.log('Play blocked:', e));
-            }
-        }
-    }
-    
     if (initialTheme === 'light') {
         document.body.classList.add('light-theme');
-        icon.textContent = '🌙'; // moon icon for light mode (click to go dark)
+        icon.textContent = '🌙';
         localStorage.setItem('theme', 'light');
     } else {
         document.body.classList.remove('light-theme');
         icon.textContent = '✨';
         localStorage.setItem('theme', 'dark');
     }
-    updateMusic(initialTheme === 'light', false);
 
     btn.addEventListener('click', (e) => {
         e.stopPropagation();
-        
-        // This button acts as a user interaction, so we can unlock audio
-        audioUnlocked = true;
-
         document.body.classList.toggle('light-theme');
         const isLight = document.body.classList.contains('light-theme');
-        
         localStorage.setItem('theme', isLight ? 'light' : 'dark');
-        updateMusic(isLight, true);
+        
+        // Switch music file when theme changes
+        const audio = document.getElementById('bg-music');
+        if (audio) {
+            const newSrc = isLight ? 'lightmusic.mp3' : 'darkmusic.mp3';
+            const wasPlaying = !audio.paused;
+            audio.src = newSrc;
+            if (wasPlaying) {
+                audio.play().catch(() => {});
+            }
+        }
         
         // Animate icon swap
         icon.style.transform = 'rotate(180deg) scale(0)';
@@ -233,10 +222,11 @@ document.addEventListener('DOMContentLoaded', () => {
     initEasterEgg();
     initThemeToggle();
 
-    // Audio: play ONCE on first TAP, never again until page refresh
-    // Note: iOS Safari only allows audio from deliberate taps, not scroll gestures
+    // Set the correct music file based on theme (without playing)
     const audio = document.getElementById('bg-music');
     if (audio) {
+        const isLight = document.body.classList.contains('light-theme');
+        audio.src = isLight ? 'lightmusic.mp3' : 'darkmusic.mp3';
         audio.volume = 0.5;
         let hasPlayed = false;
 
