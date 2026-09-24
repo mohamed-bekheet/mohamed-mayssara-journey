@@ -185,12 +185,12 @@ function initThemeToggle() {
             const newSrc = isLight ? 'lightmusic.mp3' : 'darkmusic.mp3';
             // Only update if it's actually changing
             if (source.getAttribute('src') !== newSrc) {
-                const wasPlaying = !audio.paused;
                 source.setAttribute('src', newSrc);
                 audio.load();
-                if (wasPlaying) {
-                    audio.play().catch(e => console.log('Autoplay blocked'));
-                }
+            }
+            // Always try to play when this is called (since it's triggered by a click)
+            if (audio.paused) {
+                audio.play().catch(e => console.log('Autoplay blocked'));
             }
         }
     }
@@ -237,13 +237,14 @@ document.addEventListener('DOMContentLoaded', () => {
         audio.volume = 0.5; // Soft volume
         // Try to play immediately (might be blocked)
         audio.play().catch(e => {
-            // If blocked, wait for the first user interaction
-            document.body.addEventListener('click', () => {
-                audio.play();
-            }, { once: true });
-            document.body.addEventListener('touchstart', () => {
-                audio.play();
-            }, { once: true });
+            // If blocked, wait for any interaction on the whole document
+            const playAudio = () => {
+                if (audio.paused) {
+                    audio.play().catch(err => console.log('Still blocked:', err));
+                }
+            };
+            document.addEventListener('click', playAudio);
+            document.addEventListener('touchstart', playAudio);
         });
     }
 });
