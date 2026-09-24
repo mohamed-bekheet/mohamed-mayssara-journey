@@ -242,11 +242,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 audio.play().then(() => {
                     document.removeEventListener('click', unlockAudio, true);
                     document.removeEventListener('touchstart', unlockAudio, true);
+                    document.removeEventListener('touchend', unlockAudio, true);
+                    document.removeEventListener('pointerup', unlockAudio, true);
                 }).catch(err => console.log('Still blocked:', err));
             }
         };
-        // Use capture phase (true) so we catch ALL clicks, even those with stopPropagation
+        // Use capture phase (true) so we catch ALL interactions
         document.addEventListener('click', unlockAudio, true);
         document.addEventListener('touchstart', unlockAudio, true);
+        document.addEventListener('touchend', unlockAudio, true);
+        document.addEventListener('pointerup', unlockAudio, true);
     }
 });
