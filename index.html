@@ -29,17 +29,41 @@
       letter-spacing: 1px;
     }
     .header h1 span {
-      color: #b76e79;
+      color: #b76e79; /* Rose gold */
     }
+    
+    /* Live Timer Grid */
     .counter-box {
       margin-top: 20px;
     }
-    .counter-number {
-      font-size: 4.5rem;
+    .timer-grid {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 20px 0;
+    }
+    .timer-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: white;
+      padding: 10px 12px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+      min-width: 55px;
+    }
+    .timer-item span {
+      font-size: 2.2rem;
       font-weight: bold;
       color: #b76e79;
       line-height: 1;
-      margin: 10px 0;
+    }
+    .timer-item small {
+      font-size: 0.75rem;
+      color: #888;
+      text-transform: uppercase;
+      margin-top: 6px;
+      letter-spacing: 0.5px;
     }
     .counter-text {
       font-size: 1.1rem;
@@ -130,7 +154,7 @@
     /* Key Icon Section */
     .key-section {
       text-align: center;
-      margin: 10px auto 80px; /* Extra bottom margin for the floating button */
+      margin: 10px auto 80px; 
       animation: fadeInUp 0.8s ease forwards;
       animation-delay: 0.8s;
       opacity: 0;
@@ -193,8 +217,28 @@
     <h1>Mohamed <span>&</span> Mayssara</h1>
     <div class="counter-box">
       <div class="counter-text">It has been</div>
-      <div class="counter-number" id="days-counter">...</div>
-      <div class="counter-text">days since Qrayet El Fatiha</div>
+      
+      <!-- New Timer Grid -->
+      <div class="timer-grid">
+        <div class="timer-item">
+          <span id="c-days">0</span>
+          <small>Days</small>
+        </div>
+        <div class="timer-item">
+          <span id="c-hours">0</span>
+          <small>Hours</small>
+        </div>
+        <div class="timer-item">
+          <span id="c-mins">0</span>
+          <small>Mins</small>
+        </div>
+        <div class="timer-item">
+          <span id="c-secs">0</span>
+          <small>Secs</small>
+        </div>
+      </div>
+
+      <div class="counter-text">since Qrayet El Fatiha</div>
     </div>
   </div>
 
@@ -237,17 +281,323 @@
   </div>
 
   <script>
-    // Qrayet El Fatiha Date
-    const ceremonyDate = new Date("2026-09-24T00:00:00"); 
+    // Qrayet El Fatiha Date & Time (Set to Midnight, Sept 24, 2026)
+    // You can adjust the "00:00:00" to the exact hour of the ceremony if you prefer (e.g., "18:00:00" for 6 PM)
+    const ceremonyDate = new Date("2026-09-24T00:00:00").getTime(); 
 
     function updateCounter() {
-      const today = new Date();
-      const diffTime = today - ceremonyDate;
-      const diffDays = Math.max(0, Math.floor(diffTime / (1000 * 60 * 60 * 24)));
-      document.getElementById('days-counter').innerText = diffDays;
+      const now = new Date().getTime();
+      const diffTime = Math.max(0, now - ceremonyDate); // Prevents negative numbers before the date
+      
+      // Math calculations for days, hours, minutes, and seconds
+      const days = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diffTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diffTime % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diffTime % (1000 * 60)) / 1I have upgraded the counter into a live, ticking timer that displays days, hours, minutes, and seconds. The numbers will update every single second in real-time. I also placed the timer in elegant little styling blocks to keep the design looking premium.
+
+Replace the code in your `index.html` file with this final version:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mohamed & Mayssara's Journey</title>
+  <style>
+    /* Elegant global styles */
+    body {
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: #fcfaf8;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    
+    /* Header & Main Counter */
+    .header {
+      text-align: center;
+      padding: 50px 20px 30px;
+      background: linear-gradient(to bottom, #ffffff, #fcfaf8);
+      border-bottom: 1px solid #f0e6e7;
+    }
+    .header h1 {
+      font-size: 2.2rem;
+      color: #222;
+      margin: 0 0 10px 0;
+      letter-spacing: 1px;
+    }
+    .header h1 span {
+      color: #b76e79;
+    }
+    .counter-text {
+      font-size: 1.1rem;
+      color: #666;
+      margin: 10px 0;
     }
 
-    updateCounter();
+    /* Live Timer Grid */
+    .timer-container {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px auto;
+      max-width: 350px;
+    }
+    .time-block {
+      background: white;
+      padding: 12px 10px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+      flex: 1;
+    }
+    .time-number {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #b76e79;
+      line-height: 1;
+    }
+    .time-label {
+      font-size: 0.75rem;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 8px;
+    }
+
+    /* Timeline Container */
+    .timeline {
+      position: relative;
+      max-width: 450px;
+      margin: 40px auto 20px;
+      padding: 0 20px;
+    }
+    
+    .timeline::after {
+      content: '';
+      position: absolute;
+      width: 4px;
+      background: #e8d5d8;
+      top: 10px;
+      bottom: 20px;
+      left: 38px;
+      border-radius: 2px;
+    }
+
+    /* Individual Timeline Items */
+    .timeline-item {
+      position: relative;
+      padding: 10px 0 30px 50px;
+      animation: fadeInUp 0.8s ease forwards;
+      opacity: 0;
+    }
+    
+    .timeline-item:nth-child(1) { animation-delay: 0.2s; }
+    .timeline-item:nth-child(2) { animation-delay: 0.4s; }
+    .timeline-item:nth-child(3) { animation-delay: 0.6s; }
+
+    .timeline-dot {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-color: #b76e79;
+      border: 4px solid #fcfaf8;
+      border-radius: 50%;
+      left: 26px;
+      top: 15px;
+      z-index: 1;
+      box-shadow: 0 0 0 3px rgba(183, 110, 121, 0.2);
+    }
+
+    .upcoming .timeline-dot {
+      background-color: #fcfaf8;
+      border: 4px solid #e8d5d8;
+      box-shadow: none;
+    }
+
+    .timeline-content {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.04);
+      position: relative;
+    }
+    .timeline-date {
+      font-size: 0.9rem;
+      color: #b76e79;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    .upcoming .timeline-date {
+      color: #999;
+    }
+    .timeline-content h3 {
+      margin: 0 0 8px 0;
+      font-size: 1.3rem;
+      color: #222;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .timeline-content p {
+      margin: 0;
+      color: #666;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+
+    /* Key Icon Section */
+    .key-section {
+      text-align: center;
+      margin: 10px auto 80px; 
+      animation: fadeInUp 0.8s ease forwards;
+      animation-delay: 0.8s;
+      opacity: 0;
+    }
+    .key-icon {
+      width: 45px;
+      height: 45px;
+      margin: 0 auto 10px;
+    }
+    .key-text {
+      color: #b76e79;
+      font-style: italic;
+      font-size: 1.1rem;
+      margin: 0;
+    }
+
+    /* Floating Music Button */
+    .music-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #b76e79;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      padding: 12px 20px;
+      font-size: 1rem;
+      font-family: inherit;
+      box-shadow: 0 4px 15px rgba(183, 110, 121, 0.4);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 100;
+      transition: background-color 0.3s;
+    }
+    .music-btn:hover {
+      background-color: #9c5c66;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Audio Element -->
+  <audio id="bg-music" loop>
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Floating Music Button -->
+  <button class="music-btn" id="music-toggle" onclick="toggleMusic()">
+    🎵 Play Music
+  </button>
+
+  <div class="header">
+    <h1>Mohamed <span>&</span> Mayssara</h1>
+    <div class="counter-text">Time since Qrayet El Fatiha:</div>
+    
+    <!-- Live Ticking Timer Grid -->
+    <div class="timer-container">
+      <div class="time-block">
+        <div class="time-number" id="t-days">0</div>
+        <div class="time-label">Days</div>
+      </div>
+      <div class="time-block">
+        <div class="time-number" id="t-hours">00</div>
+        <div class="time-label">Hours</div>
+      </div>
+      <div class="time-block">
+        <div class="time-number" id="t-mins">00</div>
+        <div class="time-label">Mins</div>
+      </div>
+      <div class="time-block">
+        <div class="time-number" id="t-secs">00</div>
+        <div class="time-label">Secs</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <div class="timeline-date">September 24, 2026</div>
+        <h3>🤲 Qrayet El Fatiha</h3>
+        <p>The beautiful beginning of our forever journey together.</p>
+      </div>
+    </div>
+
+    <div class="timeline-item upcoming">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <div class="timeline-date">Coming Soon</div>
+        <h3>💍 Engagement</h3>
+        <p>Our official Khotoba celebration.</p>
+      </div>
+    </div>
+
+    <div class="timeline-item upcoming">
+      <div class="timeline-dot"></div>
+      <div class="timeline-content">
+        <div class="timeline-date">Coming Soon</div>
+        <h3>📜 Katb El Kitab</h3>
+        <p>The day we officially become husband and wife.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="key-section">
+    <div class="key-icon">
+      <svg xmlns="[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)" viewBox="0 0 24 24" fill="none" stroke="#b76e79" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path>
+      </svg>
+    </div>
+    <p class="key-text">The key to our forever</p>
+  </div>
+
+  <script>
+    // Qrayet El Fatiha Date & Time (Set to exactly midnight on the 24th)
+    const ceremonyDate = new Date("2026-09-24T00:00:00"); 
+
+    function updateLiveTimer() {
+      const today = new Date();
+      
+      // Calculate the total difference in milliseconds
+      const diffTime = Math.max(0, today - ceremonyDate);
+      
+      // Calculate days, hours, minutes, and seconds
+      const days = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diffTime / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diffTime / 1000 / 60) % 60);
+      const seconds = Math.floor((diffTime / 1000) % 60);
+      
+      // Update HTML elements (adding '0' in front of single digits for hours, mins, secs)
+      document.getElementById('t-days').innerText = days;
+      document.getElementById('t-hours').innerText = hours.toString().padStart(2, '0');
+      document.getElementById('t-mins').innerText = minutes.toString().padStart(2, '0');
+      document.getElementById('t-secs').innerText = seconds.toString().padStart(2, '0');
+    }
+
+    // Run the timer right away, then update it every 1000 milliseconds (1 second)
+    updateLiveTimer();
+    setInterval(updateLiveTimer, 1000);
 
     // Music Player Logic
     const music = document.getElementById("bg-music");
