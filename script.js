@@ -233,69 +233,26 @@ document.addEventListener('DOMContentLoaded', () => {
     initEasterEgg();
     initThemeToggle();
 
-    // Audio: play ONCE on first interaction, never again until page refresh
+    // Audio: play ONCE on first TAP, never again until page refresh
+    // Note: iOS Safari only allows audio from deliberate taps, not scroll gestures
     const audio = document.getElementById('bg-music');
     if (audio) {
         audio.volume = 0.5;
         let hasPlayed = false;
 
-        // Create a Web Audio context - can be unlocked by touchstart even during scroll
-        let audioCtx = null;
-        let audioSource = null;
-
-        const setupWebAudio = () => {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                audioSource = audioCtx.createMediaElementSource(audio);
-                audioSource.connect(audioCtx.destination);
-            }
-        };
-
-        const removeAllListeners = () => {
-            document.removeEventListener('touchstart', onTouchStart, true);
-            document.removeEventListener('touchend', onInteraction, true);
-            document.removeEventListener('click', onInteraction, true);
-            document.removeEventListener('pointerup', onInteraction, true);
-        };
-
-        const tryPlay = () => {
+        const playOnce = () => {
             if (hasPlayed) return;
             hasPlayed = true;
-            removeAllListeners();
-
-            // Resume audio context first (needed for iOS)
-            const ctxResume = audioCtx && audioCtx.state === 'suspended' 
-                ? audioCtx.resume() 
-                : Promise.resolve();
-
-            ctxResume.then(() => {
-                return audio.play();
-            }).catch(err => {
-                // If blocked, allow retrying
+            document.removeEventListener('click', playOnce, true);
+            document.removeEventListener('touchend', playOnce, true);
+            audio.play().catch(() => {
                 hasPlayed = false;
-                document.addEventListener('click', onInteraction, true);
-                document.addEventListener('touchend', onInteraction, true);
+                document.addEventListener('click', playOnce, true);
+                document.addEventListener('touchend', playOnce, true);
             });
         };
 
-        // touchstart fires BEFORE iOS decides it's a scroll — unlock the audio context here
-        const onTouchStart = () => {
-            setupWebAudio();
-            if (audioCtx && audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-            tryPlay();
-        };
-
-        // Other interactions as fallback
-        const onInteraction = () => {
-            setupWebAudio();
-            tryPlay();
-        };
-
-        document.addEventListener('touchstart', onTouchStart, true);
-        document.addEventListener('touchend', onInteraction, true);
-        document.addEventListener('click', onInteraction, true);
-        document.addEventListener('pointerup', onInteraction, true);
+        document.addEventListener('click', playOnce, true);
+        document.addEventListener('touchend', playOnce, true);
     }
 });
