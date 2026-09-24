@@ -178,19 +178,21 @@ function initThemeToggle() {
     // URL overrides saved preference
     const initialTheme = urlTheme || localStorage.getItem('theme') || 'dark';
     
-    function updateMusic(isLight) {
+    let audioUnlocked = false;
+
+    function updateMusic(isLight, forcePlay = true) {
         const audio = document.getElementById('bg-music');
         const source = document.getElementById('audio-source');
         if (audio && source) {
             const newSrc = isLight ? 'lightmusic.mp3' : 'darkmusic.mp3';
-            // Only update if it's actually changing
             if (source.getAttribute('src') !== newSrc) {
                 source.setAttribute('src', newSrc);
-                audio.load();
+                if (forcePlay || audioUnlocked) {
+                    audio.load();
+                }
             }
-            // Always try to play when this is called (since it's triggered by a click)
-            if (audio.paused) {
-                audio.play().catch(e => console.log('Autoplay blocked'));
+            if (forcePlay && audioUnlocked && audio.paused) {
+                audio.play().catch(e => console.log('Play blocked:', e));
             }
         }
     }
@@ -204,15 +206,19 @@ function initThemeToggle() {
         icon.textContent = '✨';
         localStorage.setItem('theme', 'dark');
     }
-    updateMusic(initialTheme === 'light');
+    updateMusic(initialTheme === 'light', false);
 
     btn.addEventListener('click', (e) => {
         e.stopPropagation();
+        
+        // This button acts as a user interaction, so we can unlock audio
+        audioUnlocked = true;
+
         document.body.classList.toggle('light-theme');
         const isLight = document.body.classList.contains('light-theme');
         
         localStorage.setItem('theme', isLight ? 'light' : 'dark');
-        updateMusic(isLight);
+        updateMusic(isLight, true);
         
         // Animate icon swap
         icon.style.transform = 'rotate(180deg) scale(0)';
@@ -231,20 +237,22 @@ document.addEventListener('DOMContentLoaded', () => {
     initEasterEgg();
     initThemeToggle();
 
-    // Autoplay workaround for browsers that block it
+    // Bulletproof Audio Unlocking for iOS/Safari
     const audio = document.getElementById('bg-music');
     if (audio) {
-        audio.volume = 0.5; // Soft volume
-        // Try to play immediately (might be blocked)
-        audio.play().catch(e => {
-            // If blocked, wait for any interaction on the whole document
-            const playAudio = () => {
-                if (audio.paused) {
-                    audio.play().catch(err => console.log('Still blocked:', err));
-                }
-            };
-            document.addEventListener('click', playAudio);
-            document.addEventListener('touchstart', playAudio);
-        });
+        audio.volume = 0.5;
+        const unlockAudio = () => {
+            if (audio.paused) {
+                audio.play().then(() => {
+                    audioUnlocked = true;
+                    // Once playing successfully, we don't need this listener
+                    document.removeEventListener('click', unlockAudio);
+                    document.removeEventListener('touchstart', unlockAudio);
+                }).catch(err => console.log('Still blocked:', err));
+            }
+        };
+        
+        document.addEventListener('click', unlockAudio);
+        document.addEventListener('touchstart', unlockAudio);
     }
 });
