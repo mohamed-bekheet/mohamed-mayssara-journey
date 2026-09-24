@@ -16,7 +16,7 @@
 body {
     font-family: 'Outfit', sans-serif;
     color: var(--text-dark);
-    min-height: 100vh;
+    min-height: 100dvh; /* 100dvh fixes iOS Safari bottom bar clipping */
     overflow-x: hidden;
     position: relative;
     /* Soft fallback background */
@@ -63,7 +63,8 @@ body {
 .container {
     max-width: 800px;
     margin: 0 auto;
-    padding: 3rem 1rem;
+    /* Use env(safe-area) for modern iPhones (Notch/Dynamic Island support) */
+    padding: calc(3rem + env(safe-area-inset-top)) calc(1rem + env(safe-area-inset-right)) calc(3rem + env(safe-area-inset-bottom)) calc(1rem + env(safe-area-inset-left));
     position: relative;
     z-index: 1;
 }
