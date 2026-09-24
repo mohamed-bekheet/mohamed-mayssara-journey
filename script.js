@@ -222,24 +222,40 @@ document.addEventListener('DOMContentLoaded', () => {
     initEasterEgg();
     initThemeToggle();
 
-    // Set the correct music file based on theme (without playing)
+    // Set the correct music file based on theme
     const audio = document.getElementById('bg-music');
     if (audio) {
         const isLight = document.body.classList.contains('light-theme');
-        audio.src = isLight ? 'lightmusic.mp3' : 'darkmusic.mp3';
+        // Only change src if light theme (HTML default is darkmusic.mp3)
+        if (isLight) {
+            audio.src = 'lightmusic.mp3';
+            audio.load();
+        }
         audio.volume = 0.5;
         let hasPlayed = false;
+
+        const doPlay = () => {
+            audio.play().catch(() => {
+                // Still blocked, re-add listeners for next tap
+                hasPlayed = false;
+                document.addEventListener('click', playOnce, true);
+                document.addEventListener('touchend', playOnce, true);
+            });
+        };
 
         const playOnce = () => {
             if (hasPlayed) return;
             hasPlayed = true;
             document.removeEventListener('click', playOnce, true);
             document.removeEventListener('touchend', playOnce, true);
-            audio.play().catch(() => {
-                hasPlayed = false;
-                document.addEventListener('click', playOnce, true);
-                document.addEventListener('touchend', playOnce, true);
-            });
+
+            // If audio isn't loaded yet, wait for it
+            if (audio.readyState < 3) {
+                audio.addEventListener('canplaythrough', () => doPlay(), { once: true });
+                audio.load();
+            } else {
+                doPlay();
+            }
         };
 
         document.addEventListener('click', playOnce, true);
