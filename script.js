@@ -1,7 +1,7 @@
 // Floating Elements Generator Background Effect
 function createFloatingItems() {
     const bg = document.querySelector('.background');
-    const floatSymbols = ['✨', '🎈', '🌟', '☕', '🎉', '🕊️'];
+    const floatSymbols = ['😅', '🚴‍♀️', '💪', '🤟', '✍️', '🗝️', '🔒', '💥', '😉', '🤏', '✨', '🥳', '👏', '🙏', '🙆'];
     
     setInterval(() => {
         const item = document.createElement('div');
