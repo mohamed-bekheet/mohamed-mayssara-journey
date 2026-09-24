@@ -1,7 +1,7 @@
 // Floating Elements Generator Background Effect
 function createFloatingItems() {
     const bg = document.querySelector('.background');
-    const floatSymbols = ['😅', '🚴‍♀️', '💪', '🤟', '✍️', '🗝️', '🔒', '💥', '😉', '🤏', '✨', '🥳', '👏', '🙏', '🙆'];
+    const floatSymbols = ['🤏', '✨', '🙏', '🙆'];
     
     setInterval(() => {
         const item = document.createElement('div');
@@ -10,9 +10,9 @@ function createFloatingItems() {
         // Randomize properties
         const randomSymbol = floatSymbols[Math.floor(Math.random() * floatSymbols.length)];
         const leftPos = Math.random() * 100;
-        const animDuration = 10 + Math.random() * 10; // 10s to 20s
-        const opacity = 0.4 + Math.random() * 0.4; // 0.4 to 0.8
-        const size = 1 + Math.random() * 1; // 1rem to 2rem
+        const animDuration = 12 + Math.random() * 8; // 12s to 20s
+        const opacity = 0.7 + Math.random() * 0.3; // 0.7 to 1.0
+        const size = 2.5 + Math.random() * 2; // 2.5rem to 4.5rem
         
         item.innerText = randomSymbol;
         item.style.left = `${leftPos}%`;
