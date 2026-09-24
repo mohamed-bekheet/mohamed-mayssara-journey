@@ -5,12 +5,12 @@
     --card-border: rgba(255, 255, 255, 0.08);
     --text-primary: #f0ece2;
     --text-secondary: rgba(240, 236, 226, 0.6);
-    --accent: #ffcc00;
-    --accent-bright: #ffe666;
-    --accent-soft: rgba(255, 204, 0, 0.15);
-    --accent-glow: rgba(255, 204, 0, 0.35);
-    --shimmer: linear-gradient(135deg, #ffcc00, #ffffff, #ffaa00, #ffcc00);
-    --text-glow: 0 0 15px rgba(255, 204, 0, 0.4);
+    --accent: #dcb556;
+    --accent-bright: #fcf6ba;
+    --accent-soft: rgba(220, 181, 86, 0.15);
+    --accent-glow: rgba(220, 181, 86, 0.35);
+    --shimmer: linear-gradient(135deg, #aa771c 0%, #fcf6ba 25%, #dcb556 50%, #fbf5b7 75%, #8a5a19 100%);
+    --text-glow: 0 0 15px rgba(220, 181, 86, 0.4);
     
     /* Component specific backgrounds */
     --bg-timer: rgba(255, 255, 255, 0.03);
@@ -443,9 +443,14 @@ footer p {
     font-size: 1.1rem; /* Mobile size */
     font-style: italic;
     font-weight: 700;
-    color: var(--accent);
+    background: var(--shimmer);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
     letter-spacing: 1px;
-    text-shadow: 0 1px 2px rgba(184, 138, 62, 0.15);
+    animation: shimmerText 3s linear infinite;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5); /* Helps it pop on dark background */
 }
 
 /* ─── Responsive Desktop ─── */
