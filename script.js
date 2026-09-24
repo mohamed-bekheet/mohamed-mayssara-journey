@@ -166,12 +166,41 @@ function initEasterEgg() {
     });
 }
 
+// Theme Toggle
+function initThemeToggle() {
+    const btn = document.getElementById('theme-toggle');
+    const icon = btn.querySelector('.icon');
+    
+    // Check saved theme
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light') {
+        document.body.classList.add('light-theme');
+        icon.textContent = '🌙'; // moon icon for light mode (click to go dark)
+    }
+
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        document.body.classList.toggle('light-theme');
+        const isLight = document.body.classList.contains('light-theme');
+        
+        localStorage.setItem('theme', isLight ? 'light' : 'dark');
+        
+        // Animate icon swap
+        icon.style.transform = 'rotate(180deg) scale(0)';
+        setTimeout(() => {
+            icon.textContent = isLight ? '🌙' : '✨';
+            icon.style.transform = 'rotate(0deg) scale(1)';
+        }, 150);
+    });
+}
+
 // Initialize on DOM Load
 document.addEventListener('DOMContentLoaded', () => {
     createFloatingItems();
     startTimer();
     initConfetti();
     initEasterEgg();
+    initThemeToggle();
 
     // Autoplay workaround for browsers that block it
     const audio = document.getElementById('bg-music');
