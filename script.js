@@ -10,9 +10,9 @@ function createFloatingItems() {
         // Randomize properties
         const randomSymbol = floatSymbols[Math.floor(Math.random() * floatSymbols.length)];
         const leftPos = Math.random() * 100;
-        const animDuration = 12 + Math.random() * 8; // 12s to 20s
-        const opacity = 0.7 + Math.random() * 0.3; // 0.7 to 1.0
-        const size = 2.5 + Math.random() * 2; // 2.5rem to 4.5rem
+        const animDuration = 14 + Math.random() * 8; // 14s to 22s
+        const opacity = 0.25 + Math.random() * 0.2; // 0.25 to 0.45
+        const size = 1.4 + Math.random() * 1; // 1.4rem to 2.4rem
         
         item.innerText = randomSymbol;
         item.style.left = `${leftPos}%`;
