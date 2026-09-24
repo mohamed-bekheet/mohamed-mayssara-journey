@@ -45,7 +45,7 @@ function startTimer() {
             document.querySelector('.timer-title').innerText = "Time until our special day:";
         } else {
             // Count-up
-            document.querySelector('.timer-title').innerText = "Time since we said Yes:";
+            document.querySelector('.timer-title').innerText = "Time since my request officially approved:";
         }
 
         const days = Math.floor(diff / (1000 * 60 * 60 * 24));
