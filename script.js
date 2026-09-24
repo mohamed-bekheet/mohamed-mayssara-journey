@@ -233,41 +233,20 @@ document.addEventListener('DOMContentLoaded', () => {
     initEasterEgg();
     initThemeToggle();
 
-    // Music Button Logic
+    // Audio: play on first tap anywhere on the page
     const audio = document.getElementById('bg-music');
-    const musicBtn = document.getElementById('music-toggle');
-    const musicIcon = document.getElementById('music-icon');
-    
-    if (audio && musicBtn) {
+    if (audio) {
         audio.volume = 0.5;
-        
-        musicBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            audioUnlocked = true;
-            
+        const unlockAudio = () => {
             if (audio.paused) {
                 audio.play().then(() => {
-                    musicIcon.textContent = '🔊';
-                }).catch(err => console.log('Blocked:', err));
-            } else {
-                audio.pause();
-                musicIcon.textContent = '🎵';
-            }
-        });
-        
-        // Optional: Still try to unlock on first document touch if they don't click the button
-        const unlockAudio = () => {
-            if (audio.paused && !audioUnlocked) {
-                audio.play().then(() => {
-                    audioUnlocked = true;
-                    musicIcon.textContent = '🔊';
-                    document.removeEventListener('click', unlockAudio);
-                    document.removeEventListener('touchstart', unlockAudio);
+                    document.removeEventListener('click', unlockAudio, true);
+                    document.removeEventListener('touchstart', unlockAudio, true);
                 }).catch(err => console.log('Still blocked:', err));
             }
         };
-        
-        document.addEventListener('click', unlockAudio);
-        document.addEventListener('touchstart', unlockAudio);
+        // Use capture phase (true) so we catch ALL clicks, even those with stopPropagation
+        document.addEventListener('click', unlockAudio, true);
+        document.addEventListener('touchstart', unlockAudio, true);
     }
 });
