@@ -233,21 +233,31 @@ document.addEventListener('DOMContentLoaded', () => {
     initEasterEgg();
     initThemeToggle();
 
-    // Audio: play on first tap anywhere on the page
+    // Audio: play ONCE on first interaction, never again until page refresh
     const audio = document.getElementById('bg-music');
     if (audio) {
         audio.volume = 0.5;
-        const unlockAudio = () => {
-            if (audio.paused) {
-                audio.play().then(() => {
-                    document.removeEventListener('click', unlockAudio, true);
-                    document.removeEventListener('touchstart', unlockAudio, true);
-                    document.removeEventListener('touchend', unlockAudio, true);
-                    document.removeEventListener('pointerup', unlockAudio, true);
-                }).catch(err => console.log('Still blocked:', err));
-            }
+        let hasPlayed = false;
+
+        const removeListeners = () => {
+            document.removeEventListener('click', unlockAudio, true);
+            document.removeEventListener('touchstart', unlockAudio, true);
+            document.removeEventListener('touchend', unlockAudio, true);
+            document.removeEventListener('pointerup', unlockAudio, true);
         };
-        // Use capture phase (true) so we catch ALL interactions
+
+        const unlockAudio = () => {
+            if (hasPlayed) return;
+            hasPlayed = true;
+            removeListeners();
+            audio.play().catch(err => {
+                // If play was blocked, allow one more try
+                hasPlayed = false;
+                document.addEventListener('click', unlockAudio, true);
+                document.addEventListener('touchend', unlockAudio, true);
+            });
+        };
+
         document.addEventListener('click', unlockAudio, true);
         document.addEventListener('touchstart', unlockAudio, true);
         document.addEventListener('touchend', unlockAudio, true);
