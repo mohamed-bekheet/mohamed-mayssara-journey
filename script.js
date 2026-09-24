@@ -178,6 +178,23 @@ function initThemeToggle() {
     // URL overrides saved preference
     const initialTheme = urlTheme || localStorage.getItem('theme') || 'dark';
     
+    function updateMusic(isLight) {
+        const audio = document.getElementById('bg-music');
+        const source = document.getElementById('audio-source');
+        if (audio && source) {
+            const newSrc = isLight ? 'lightmusic.mp3' : 'darkmusic.mp3';
+            // Only update if it's actually changing
+            if (source.getAttribute('src') !== newSrc) {
+                const wasPlaying = !audio.paused;
+                source.setAttribute('src', newSrc);
+                audio.load();
+                if (wasPlaying) {
+                    audio.play().catch(e => console.log('Autoplay blocked'));
+                }
+            }
+        }
+    }
+    
     if (initialTheme === 'light') {
         document.body.classList.add('light-theme');
         icon.textContent = '🌙'; // moon icon for light mode (click to go dark)
@@ -187,6 +204,7 @@ function initThemeToggle() {
         icon.textContent = '✨';
         localStorage.setItem('theme', 'dark');
     }
+    updateMusic(initialTheme === 'light');
 
     btn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -194,6 +212,7 @@ function initThemeToggle() {
         const isLight = document.body.classList.contains('light-theme');
         
         localStorage.setItem('theme', isLight ? 'light' : 'dark');
+        updateMusic(isLight);
         
         // Animate icon swap
         icon.style.transform = 'rotate(180deg) scale(0)';
