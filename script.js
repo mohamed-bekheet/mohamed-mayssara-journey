@@ -66,8 +66,8 @@ function startTimer() {
 
 // Tap Confetti Burst
 function initConfetti() {
-    const confettiEmojis = ['🤏', '✨', '🙏', '🙆'];
-    const particleCount = 12;
+    const confettiEmojis = ['✨', '🙏', '✨', '🙏'];
+    const particleCount = 4;
 
     function burst(x, y) {
         for (let i = 0; i < particleCount; i++) {
