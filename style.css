@@ -4,9 +4,9 @@
     --card-border: rgba(255, 255, 255, 0.08);
     --text-primary: #f0ece2;
     --text-secondary: rgba(240, 236, 226, 0.6);
-    --accent: #c9a96e;
-    --accent-soft: rgba(201, 169, 110, 0.15);
-    --accent-glow: rgba(201, 169, 110, 0.3);
+    --accent: #e2c17d;
+    --accent-soft: rgba(226, 193, 125, 0.15);
+    --accent-glow: rgba(226, 193, 125, 0.3);
 }
 
 * {
@@ -415,4 +415,24 @@ footer p {
 }
 @keyframes slideInRight {
     to { opacity: 1; transform: translateX(0); }
+}
+
+/* ─── Tap Confetti ─── */
+.confetti-particle {
+    position: fixed;
+    font-size: 1.6rem;
+    pointer-events: none;
+    z-index: 9999;
+    animation: confettiBurst 1s ease-out forwards;
+}
+
+@keyframes confettiBurst {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1) rotate(0deg);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(var(--tx), var(--ty)) scale(0.3) rotate(var(--rot));
+    }
 }

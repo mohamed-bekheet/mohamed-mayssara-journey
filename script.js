@@ -64,10 +64,50 @@ function startTimer() {
     setInterval(updateTimer, 1000);
 }
 
+// Tap Confetti Burst
+function initConfetti() {
+    const confettiEmojis = ['🤏', '✨', '🙏', '🙆'];
+    const particleCount = 12;
+
+    function burst(x, y) {
+        for (let i = 0; i < particleCount; i++) {
+            const el = document.createElement('div');
+            el.classList.add('confetti-particle');
+            el.innerText = confettiEmojis[Math.floor(Math.random() * confettiEmojis.length)];
+
+            // Random direction
+            const angle = (Math.PI * 2 * i) / particleCount + (Math.random() - 0.5) * 0.5;
+            const distance = 60 + Math.random() * 80;
+            const tx = Math.cos(angle) * distance;
+            const ty = Math.sin(angle) * distance - 30; // slight upward bias
+            const rot = (Math.random() - 0.5) * 720;
+
+            el.style.left = `${x}px`;
+            el.style.top = `${y}px`;
+            el.style.setProperty('--tx', `${tx}px`);
+            el.style.setProperty('--ty', `${ty}px`);
+            el.style.setProperty('--rot', `${rot}deg`);
+
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 1000);
+        }
+    }
+
+    document.addEventListener('click', (e) => {
+        burst(e.clientX, e.clientY);
+    });
+
+    document.addEventListener('touchstart', (e) => {
+        const touch = e.touches[0];
+        burst(touch.clientX, touch.clientY);
+    }, { passive: true });
+}
+
 // Initialize on DOM Load
 document.addEventListener('DOMContentLoaded', () => {
     createFloatingItems();
     startTimer();
+    initConfetti();
 
     // Autoplay workaround for browsers that block it
     const audio = document.getElementById('bg-music');
