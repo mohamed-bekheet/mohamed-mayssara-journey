@@ -1,30 +1,30 @@
-// Floating Hearts Generator Background Effect
-function createHearts() {
+// Floating Elements Generator Background Effect
+function createFloatingItems() {
     const bg = document.querySelector('.background');
-    const heartSymbols = ['❤️', '💖', '💕', '✨', '💍'];
+    const floatSymbols = ['✨', '🎈', '🌟', '☕', '🎉', '🕊️'];
     
     setInterval(() => {
-        const heart = document.createElement('div');
-        heart.classList.add('heart');
+        const item = document.createElement('div');
+        item.classList.add('float-item');
         
         // Randomize properties
-        const randomSymbol = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+        const randomSymbol = floatSymbols[Math.floor(Math.random() * floatSymbols.length)];
         const leftPos = Math.random() * 100;
         const animDuration = 10 + Math.random() * 10; // 10s to 20s
         const opacity = 0.4 + Math.random() * 0.4; // 0.4 to 0.8
         const size = 1 + Math.random() * 1; // 1rem to 2rem
         
-        heart.innerText = randomSymbol;
-        heart.style.left = `${leftPos}%`;
-        heart.style.animationDuration = `${animDuration}s`;
-        heart.style.opacity = opacity;
-        heart.style.fontSize = `${size}rem`;
+        item.innerText = randomSymbol;
+        item.style.left = `${leftPos}%`;
+        item.style.animationDuration = `${animDuration}s`;
+        item.style.opacity = opacity;
+        item.style.fontSize = `${size}rem`;
         
-        bg.appendChild(heart);
+        bg.appendChild(item);
         
         // Remove after animation finishes
         setTimeout(() => {
-            heart.remove();
+            item.remove();
         }, animDuration * 1000);
     }, 1200); // create a heart every 1.2 seconds
 }
@@ -66,7 +66,7 @@ function startTimer() {
 
 // Initialize on DOM Load
 document.addEventListener('DOMContentLoaded', () => {
-    createHearts();
+    createFloatingItems();
     startTimer();
 
     // Autoplay workaround for browsers that block it
