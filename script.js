@@ -103,11 +103,72 @@ function initConfetti() {
     }, { passive: true });
 }
 
+// Easter Egg: 5 taps on Milestone 1 card
+function initEasterEgg() {
+    const card = document.getElementById('milestone-1-card');
+    const overlay = document.getElementById('easter-egg');
+    if (!card || !overlay) return;
+
+    let tapCount = 0;
+    let tapTimer = null;
+    let currentSlide = 0;
+    const totalSlides = 4;
+    const cards = overlay.querySelectorAll('.easter-egg-card');
+    const dots = overlay.querySelectorAll('.ee-dot');
+
+    // Count taps on the milestone 1 card
+    card.addEventListener('click', (e) => {
+        e.stopPropagation();
+        tapCount++;
+        clearTimeout(tapTimer);
+
+        // Reset tap count if user stops tapping for 2 seconds
+        tapTimer = setTimeout(() => { tapCount = 0; }, 2000);
+
+        if (tapCount >= 5) {
+            tapCount = 0;
+            currentSlide = 0;
+            showSlide(0);
+            overlay.style.display = 'flex';
+            // Trigger reflow then add visible class for animation
+            requestAnimationFrame(() => {
+                overlay.classList.add('visible');
+            });
+        }
+    });
+
+    function showSlide(index) {
+        cards.forEach(c => c.style.display = 'none');
+        dots.forEach(d => d.classList.remove('active'));
+        cards[index].style.display = 'block';
+        // Re-trigger card animation
+        cards[index].style.animation = 'none';
+        cards[index].offsetHeight; // force reflow
+        cards[index].style.animation = '';
+        dots[index].classList.add('active');
+    }
+
+    // Tap on the overlay container to advance / close
+    overlay.querySelector('.easter-egg-container').addEventListener('click', (e) => {
+        e.stopPropagation();
+        currentSlide++;
+        if (currentSlide >= totalSlides) {
+            // Close the overlay
+            overlay.classList.remove('visible');
+            setTimeout(() => { overlay.style.display = 'none'; }, 400);
+            currentSlide = 0;
+        } else {
+            showSlide(currentSlide);
+        }
+    });
+}
+
 // Initialize on DOM Load
 document.addEventListener('DOMContentLoaded', () => {
     createFloatingItems();
     startTimer();
     initConfetti();
+    initEasterEgg();
 
     // Autoplay workaround for browsers that block it
     const audio = document.getElementById('bg-music');
