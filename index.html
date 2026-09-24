@@ -22,6 +22,11 @@
     </div>
 
     <div class="container">
+        <!-- Music Toggle Button -->
+        <button id="music-toggle" class="theme-toggle" aria-label="Toggle music" style="right: auto; left: 1.5rem;">
+            <span class="icon" id="music-icon">🎵</span>
+        </button>
+
         <!-- Theme Toggle Button -->
         <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
             <span class="icon">✨</span>
@@ -143,9 +148,7 @@
         </div>
     </div>
 
-    <audio id="bg-music">
-        <source src="darkmusic.mp3" type="audio/mpeg" id="audio-source">
-    </audio>
+    <audio id="bg-music" src="darkmusic.mp3"></audio>
 
     <script src="script.js"></script>
 </body>

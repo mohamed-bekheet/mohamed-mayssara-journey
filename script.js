@@ -182,14 +182,10 @@ function initThemeToggle() {
 
     function updateMusic(isLight, forcePlay = true) {
         const audio = document.getElementById('bg-music');
-        const source = document.getElementById('audio-source');
-        if (audio && source) {
+        if (audio) {
             const newSrc = isLight ? 'lightmusic.mp3' : 'darkmusic.mp3';
-            if (source.getAttribute('src') !== newSrc) {
-                source.setAttribute('src', newSrc);
-                if (forcePlay || audioUnlocked) {
-                    audio.load();
-                }
+            if (!audio.getAttribute('src') || !audio.getAttribute('src').includes(newSrc)) {
+                audio.src = newSrc;
             }
             if (forcePlay && audioUnlocked && audio.paused) {
                 audio.play().catch(e => console.log('Play blocked:', e));
@@ -237,15 +233,34 @@ document.addEventListener('DOMContentLoaded', () => {
     initEasterEgg();
     initThemeToggle();
 
-    // Bulletproof Audio Unlocking for iOS/Safari
+    // Music Button Logic
     const audio = document.getElementById('bg-music');
-    if (audio) {
+    const musicBtn = document.getElementById('music-toggle');
+    const musicIcon = document.getElementById('music-icon');
+    
+    if (audio && musicBtn) {
         audio.volume = 0.5;
-        const unlockAudio = () => {
+        
+        musicBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            audioUnlocked = true;
+            
             if (audio.paused) {
                 audio.play().then(() => {
+                    musicIcon.textContent = '🔊';
+                }).catch(err => console.log('Blocked:', err));
+            } else {
+                audio.pause();
+                musicIcon.textContent = '🎵';
+            }
+        });
+        
+        // Optional: Still try to unlock on first document touch if they don't click the button
+        const unlockAudio = () => {
+            if (audio.paused && !audioUnlocked) {
+                audio.play().then(() => {
                     audioUnlocked = true;
-                    // Once playing successfully, we don't need this listener
+                    musicIcon.textContent = '🔊';
                     document.removeEventListener('click', unlockAudio);
                     document.removeEventListener('touchstart', unlockAudio);
                 }).catch(err => console.log('Still blocked:', err));
