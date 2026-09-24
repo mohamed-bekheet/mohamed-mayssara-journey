@@ -171,11 +171,21 @@ function initThemeToggle() {
     const btn = document.getElementById('theme-toggle');
     const icon = btn.querySelector('.icon');
     
-    // Check saved theme
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme === 'light') {
+    // Check URL parameters first (e.g. ?theme=light or ?theme=dark)
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlTheme = urlParams.get('theme');
+    
+    // URL overrides saved preference
+    const initialTheme = urlTheme || localStorage.getItem('theme') || 'dark';
+    
+    if (initialTheme === 'light') {
         document.body.classList.add('light-theme');
         icon.textContent = '🌙'; // moon icon for light mode (click to go dark)
+        localStorage.setItem('theme', 'light');
+    } else {
+        document.body.classList.remove('light-theme');
+        icon.textContent = '✨';
+        localStorage.setItem('theme', 'dark');
     }
 
     btn.addEventListener('click', (e) => {
