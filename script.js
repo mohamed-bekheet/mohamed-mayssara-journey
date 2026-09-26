@@ -31,8 +31,8 @@ function createFloatingItems() {
 
 // Timer Logic for Qrayt Elfatha
 function startTimer() {
-    // Qrayt Elfatha Date: September 26, 2026 at 8:00 PM
-    const startDate = new Date('2026-09-26T20:00:00');
+    // Qrayt Elfatha Date: September 26, 2026 at 8:00 PM Egypt Time (UTC+3)
+    const startDate = new Date('2026-09-26T20:00:00+03:00');
 
     function updateTimer() {
         const now = new Date();
